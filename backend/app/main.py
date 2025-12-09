@@ -98,6 +98,87 @@ async def get_employee_data() -> Dict[str, Any]:
     }
 
 
+@app.get("/api/v1/employees")
+async def get_employees(page: int = 1, per_page: int = 10) -> Dict[str, Any]:
+    """
+    Get paginated list of all employees with superhero alter ego names.
+    
+    Returns employee data for HR dashboard with pagination support.
+    """
+    # Superhero alter ego employees - 50 employees for realistic pagination
+    all_employees = [
+        {"employee_id": "HC-2024-001", "name": "Bruce Wayne", "department": "Executive", "earned_this_period": 45000, "available_ewa": 13500, "status": "active"},
+        {"employee_id": "HC-2024-002", "name": "Clark Kent", "department": "Media Relations", "earned_this_period": 32000, "available_ewa": 9600, "status": "active"},
+        {"employee_id": "HC-2024-003", "name": "Diana Prince", "department": "Legal", "earned_this_period": 38000, "available_ewa": 11400, "status": "active"},
+        {"employee_id": "HC-2024-004", "name": "Peter Parker", "department": "Research", "earned_this_period": 28000, "available_ewa": 8400, "status": "active"},
+        {"employee_id": "HC-2024-005", "name": "Tony Stark", "department": "Engineering", "earned_this_period": 52000, "available_ewa": 15600, "status": "active"},
+        {"employee_id": "HC-2024-006", "name": "Natasha Romanoff", "department": "Security", "earned_this_period": 35000, "available_ewa": 10500, "status": "active"},
+        {"employee_id": "HC-2024-007", "name": "Steve Rogers", "department": "Operations", "earned_this_period": 33000, "available_ewa": 9900, "status": "active"},
+        {"employee_id": "HC-2024-008", "name": "Wanda Maximoff", "department": "HR", "earned_this_period": 29000, "available_ewa": 8700, "status": "active"},
+        {"employee_id": "HC-2024-009", "name": "Stephen Strange", "department": "Consulting", "earned_this_period": 48000, "available_ewa": 14400, "status": "active"},
+        {"employee_id": "HC-2024-010", "name": "Carol Danvers", "department": "Aviation", "earned_this_period": 42000, "available_ewa": 12600, "status": "active"},
+        {"employee_id": "HC-2024-011", "name": "T'Challa", "department": "International Relations", "earned_this_period": 46000, "available_ewa": 13800, "status": "active"},
+        {"employee_id": "HC-2024-012", "name": "Scott Lang", "department": "IT", "earned_this_period": 27000, "available_ewa": 8100, "status": "active"},
+        {"employee_id": "HC-2024-013", "name": "Barry Allen", "department": "Logistics", "earned_this_period": 30000, "available_ewa": 9000, "status": "active"},
+        {"employee_id": "HC-2024-014", "name": "Hal Jordan", "department": "Aerospace", "earned_this_period": 39000, "available_ewa": 11700, "status": "active"},
+        {"employee_id": "HC-2024-015", "name": "Arthur Curry", "department": "Marine Operations", "earned_this_period": 34000, "available_ewa": 10200, "status": "active"},
+        {"employee_id": "HC-2024-016", "name": "Oliver Queen", "department": "Finance", "earned_this_period": 44000, "available_ewa": 13200, "status": "active"},
+        {"employee_id": "HC-2024-017", "name": "Selina Kyle", "department": "Asset Recovery", "earned_this_period": 31000, "available_ewa": 9300, "status": "active"},
+        {"employee_id": "HC-2024-018", "name": "Matt Murdock", "department": "Legal", "earned_this_period": 37000, "available_ewa": 11100, "status": "active"},
+        {"employee_id": "HC-2024-019", "name": "Jessica Jones", "department": "Investigations", "earned_this_period": 29000, "available_ewa": 8700, "status": "active"},
+        {"employee_id": "HC-2024-020", "name": "Luke Cage", "department": "Security", "earned_this_period": 32000, "available_ewa": 9600, "status": "active"},
+        {"employee_id": "HC-2024-021", "name": "Danny Rand", "department": "Finance", "earned_this_period": 41000, "available_ewa": 12300, "status": "active"},
+        {"employee_id": "HC-2024-022", "name": "Wade Wilson", "department": "Marketing", "earned_this_period": 26000, "available_ewa": 7800, "status": "active"},
+        {"employee_id": "HC-2024-023", "name": "Ororo Munroe", "department": "Environmental", "earned_this_period": 36000, "available_ewa": 10800, "status": "active"},
+        {"employee_id": "HC-2024-024", "name": "Jean Grey", "department": "Research", "earned_this_period": 38000, "available_ewa": 11400, "status": "active"},
+        {"employee_id": "HC-2024-025", "name": "Logan Howlett", "department": "Training", "earned_this_period": 33000, "available_ewa": 9900, "status": "active"},
+        {"employee_id": "HC-2024-026", "name": "Raven Darkholme", "department": "Strategic Planning", "earned_this_period": 40000, "available_ewa": 12000, "status": "active"},
+        {"employee_id": "HC-2024-027", "name": "Hank McCoy", "department": "Research", "earned_this_period": 43000, "available_ewa": 12900, "status": "active"},
+        {"employee_id": "HC-2024-028", "name": "Kurt Wagner", "department": "Transportation", "earned_this_period": 28000, "available_ewa": 8400, "status": "active"},
+        {"employee_id": "HC-2024-029", "name": "Kitty Pryde", "department": "IT", "earned_this_period": 30000, "available_ewa": 9000, "status": "active"},
+        {"employee_id": "HC-2024-030", "name": "Bobby Drake", "department": "Facilities", "earned_this_period": 27000, "available_ewa": 8100, "status": "active"},
+        {"employee_id": "HC-2024-031", "name": "Remy LeBeau", "department": "Sales", "earned_this_period": 35000, "available_ewa": 10500, "status": "active"},
+        {"employee_id": "HC-2024-032", "name": "Anna Marie", "department": "Customer Service", "earned_this_period": 29000, "available_ewa": 8700, "status": "active"},
+        {"employee_id": "HC-2024-033", "name": "Victor Stone", "department": "IT", "earned_this_period": 38000, "available_ewa": 11400, "status": "active"},
+        {"employee_id": "HC-2024-034", "name": "Kara Zor-El", "department": "Media Relations", "earned_this_period": 31000, "available_ewa": 9300, "status": "active"},
+        {"employee_id": "HC-2024-035", "name": "Barbara Gordon", "department": "IT Security", "earned_this_period": 39000, "available_ewa": 11700, "status": "active"},
+        {"employee_id": "HC-2024-036", "name": "Dick Grayson", "department": "Operations", "earned_this_period": 34000, "available_ewa": 10200, "status": "active"},
+        {"employee_id": "HC-2024-037", "name": "Jason Todd", "department": "Asset Recovery", "earned_this_period": 30000, "available_ewa": 9000, "status": "active"},
+        {"employee_id": "HC-2024-038", "name": "Tim Drake", "department": "Analytics", "earned_this_period": 32000, "available_ewa": 9600, "status": "active"},
+        {"employee_id": "HC-2024-039", "name": "Damian Wayne", "department": "Executive", "earned_this_period": 28000, "available_ewa": 8400, "status": "active"},
+        {"employee_id": "HC-2024-040", "name": "Cassandra Cain", "department": "Training", "earned_this_period": 29000, "available_ewa": 8700, "status": "active"},
+        {"employee_id": "HC-2024-041", "name": "Bucky Barnes", "department": "Security", "earned_this_period": 33000, "available_ewa": 9900, "status": "active"},
+        {"employee_id": "HC-2024-042", "name": "Sam Wilson", "department": "Operations", "earned_this_period": 31000, "available_ewa": 9300, "status": "active"},
+        {"employee_id": "HC-2024-043", "name": "Monica Rambeau", "department": "Energy Management", "earned_this_period": 37000, "available_ewa": 11100, "status": "active"},
+        {"employee_id": "HC-2024-044", "name": "Kate Bishop", "department": "Marketing", "earned_this_period": 28000, "available_ewa": 8400, "status": "active"},
+        {"employee_id": "HC-2024-045", "name": "Clint Barton", "department": "Security", "earned_this_period": 32000, "available_ewa": 9600, "status": "active"},
+        {"employee_id": "HC-2024-046", "name": "Hope van Dyne", "department": "Engineering", "earned_this_period": 40000, "available_ewa": 12000, "status": "active"},
+        {"employee_id": "HC-2024-047", "name": "Shuri", "department": "Research", "earned_this_period": 45000, "available_ewa": 13500, "status": "active"},
+        {"employee_id": "HC-2024-048", "name": "Nakia", "department": "International Relations", "earned_this_period": 36000, "available_ewa": 10800, "status": "active"},
+        {"employee_id": "HC-2024-049", "name": "Okoye", "department": "Security", "earned_this_period": 35000, "available_ewa": 10500, "status": "active"},
+        {"employee_id": "HC-2024-050", "name": "M'Baku", "department": "Operations", "earned_this_period": 34000, "available_ewa": 10200, "status": "active"},
+    ]
+    
+    # Calculate pagination
+    total = len(all_employees)
+    start = (page - 1) * per_page
+    end = start + per_page
+    
+    # Get paginated slice
+    employees = all_employees[start:end]
+    
+    return {
+        "success": True,
+        "employees": employees,
+        "pagination": {
+            "page": page,
+            "per_page": per_page,
+            "total": total,
+            "total_pages": (total + per_page - 1) // per_page
+        }
+    }
+
+
 @app.get("/api/v1/system/ip")
 async def get_system_ip() -> Dict[str, str]:
     """

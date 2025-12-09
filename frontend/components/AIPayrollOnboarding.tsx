@@ -66,7 +66,7 @@ export default function AIPayrollOnboarding() {
             </button>
 
             <p className="text-sm text-gray-500 mt-8">
-              Need help? The Payroll Copilot is available 24/7.
+              Need help? HomeCredit Payroll AI is available 24/7.
             </p>
           </div>
         </div>
@@ -196,7 +196,7 @@ export default function AIPayrollOnboarding() {
               <div className="flex items-start gap-3">
                 <Sparkles className="w-6 h-6 text-blue-600 shrink-0 mt-1" />
                 <div>
-                  <p className="font-semibold text-blue-900 mb-1">AI Copilot:</p>
+                  <p className="font-semibold text-blue-900 mb-1">HomeCredit AI:</p>
                   <p className="text-blue-800">
                     "I've detected 4 shift types, night diff rules, overtime multipliers, and 2 holiday policies. Converting them into payroll logic..."
                   </p>
@@ -231,7 +231,7 @@ export default function AIPayrollOnboarding() {
             <div className="flex items-start gap-3">
               <Sparkles className="w-6 h-6 text-blue-600 shrink-0 mt-1" />
               <div>
-                <p className="font-semibold text-blue-900 mb-1">AI Copilot Summary:</p>
+                <p className="font-semibold text-blue-900 mb-1">HomeCredit AI Summary:</p>
                 <p className="text-blue-800">
                   "I've extracted 47 payroll rules from your documents. I found 3 inconsistencies you may want to review."
                 </p>
@@ -334,7 +334,7 @@ export default function AIPayrollOnboarding() {
             <div className="flex items-start gap-3">
               <CheckCircle className="w-6 h-6 text-green-600 shrink-0 mt-1" />
               <div>
-                <p className="font-semibold text-green-900 mb-1">AI Copilot:</p>
+                <p className="font-semibold text-green-900 mb-1">HomeCredit AI:</p>
                 <p className="text-green-800">
                   "Shadow payroll completed. I matched 1,247 out of 1,250 payslips. Only 3 differences require review."
                 </p>

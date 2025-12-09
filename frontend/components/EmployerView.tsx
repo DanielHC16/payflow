@@ -1,14 +1,77 @@
 "use client";
 
-import { useState } from "react";
-import { LayoutDashboard, Database, Sparkles, Lock, Upload, TrendingUp, TrendingDown, Users, DollarSign, AlertCircle, Clock, CheckCircle, Calendar } from "lucide-react";
+import { useState, useEffect } from "react";
+import { LayoutDashboard, Database, Sparkles, Lock, Upload, TrendingUp, TrendingDown, Users, DollarSign, AlertCircle, Clock, CheckCircle, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
 import MobileHandoff from "./MobileHandoff";
 import AIInsights from "./AIInsights";
 import AIPayrollOnboarding from "./AIPayrollOnboarding";
 import ADALockInVisual from "./ADALockInVisual";
 
+interface Employee {
+  employee_id: string;
+  name: string;
+  department: string;
+  earned_this_period: number;
+  available_ewa: number;
+  status: string;
+}
+
+interface EmployeesResponse {
+  success: boolean;
+  employees: Employee[];
+  pagination: {
+    page: number;
+    per_page: number;
+    total: number;
+    total_pages: number;
+  };
+}
+
 export default function EmployerView() {
   const [activeTab, setActiveTab] = useState<"dashboard" | "upload" | "mobile" | "ai" | "ada">("upload");
+  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalEmployees, setTotalEmployees] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch employees when page changes
+  useEffect(() => {
+    if (activeTab === "mobile") {
+      fetchEmployees(currentPage);
+    }
+  }, [currentPage, activeTab]);
+
+  const fetchEmployees = async (page: number) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`http://localhost:8000/api/v1/employees?page=${page}&per_page=10`);
+      const data: EmployeesResponse = await response.json();
+      
+      if (data.success) {
+        setEmployees(data.employees);
+        setTotalPages(data.pagination.total_pages);
+        setTotalEmployees(data.pagination.total);
+      }
+    } catch (error) {
+      console.error("Error fetching employees:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -389,14 +452,105 @@ export default function EmployerView() {
               <h2 className="text-3xl font-bold text-gray-900 mb-2">Employee Data</h2>
               <p className="text-gray-600 mb-6">Manage employee records and payroll data</p>
 
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
-                <Database className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  Employee Database
-                </h3>
-                <p className="text-gray-600">
-                  Upload CSV files through Migration Studio to populate employee data
-                </p>
+              {/* Employee Table */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Employee ID
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Name
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Department
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Earned This Period
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Available EWA
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          Status
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200 transition-opacity duration-200">
+                      {loading ? (
+                        <tr>
+                          <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                            Loading employees...
+                          </td>
+                        </tr>
+                      ) : employees.length === 0 ? (
+                        <tr>
+                          <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                            No employees found
+                          </td>
+                        </tr>
+                      ) : (
+                        employees.map((employee) => (
+                          <tr key={employee.employee_id} className="hover:bg-gray-50 transition-colors duration-150">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                              {employee.employee_id}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                              {employee.name}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                              {employee.department}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                              ₱{employee.earned_this_period.toLocaleString()}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-medium">
+                              ₱{employee.available_ewa.toLocaleString()}
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">
+                              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 capitalize">
+                                {employee.status}
+                              </span>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Pagination */}
+                <div className="bg-gray-50 px-6 py-4 flex items-center justify-between border-t border-gray-200">
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm text-gray-700">
+                      Showing <span className="font-medium">{((currentPage - 1) * 10) + 1}-{Math.min(currentPage * 10, totalEmployees)}</span> of{" "}
+                      <span className="font-medium">{totalEmployees}</span> employees
+                    </p>
+                    <span className="text-sm text-gray-500">
+                      · Page {currentPage} of {totalPages}
+                    </span>
+                  </div>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={handlePrevPage}
+                      disabled={currentPage === 1}
+                      className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-gray-300"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                      Previous
+                    </button>
+                    <button
+                      onClick={handleNextPage}
+                      disabled={currentPage === totalPages}
+                      className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#B82329] border border-[#B82329] rounded-lg hover:bg-[#9a1d22] transition-all shadow-sm disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[#B82329]"
+                    >
+                      Next
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           )}
