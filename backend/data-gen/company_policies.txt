@@ -1,0 +1,14 @@
+
+PAYFLOW POLICY DOCUMENT (2025)
+------------------------------
+1. STANDARD HOURS: 08:00 to 17:00 (8 Hours work, 1 Hour Break).
+2. GRACE PERIOD: Employees are allowed 15 mins grace period. 
+   - Arrivals after 08:15 AM are marked "LATE".
+3. OVERTIME (OT): 
+   - Work beyond 17:00 is OT. 
+   - Rate: 1.25x Hourly Rate.
+4. HOLIDAY:
+   - Dec 08 (Feast of Immaculate Conception) is a Special Non-Working Holiday.
+   - Work on this day is paid 1.3x.
+5. MISSING LOGS:
+   - If a Clock-Out is missing, the day is marked "Incomplete" and requires manual review.
